@@ -1,7 +1,6 @@
 import UIKit
 
 class PhotoListView: UIView {
-    
     lazy var photoTableView: UITableView = {
         var photoTableView = UITableView()
         return photoTableView
@@ -16,6 +15,7 @@ class PhotoListView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     override func layoutSubviews() {
         photoTableView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(photoTableView)

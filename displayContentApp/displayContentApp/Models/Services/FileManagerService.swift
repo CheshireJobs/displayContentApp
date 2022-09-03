@@ -36,9 +36,9 @@ class FileManagerService {
     private func updateContent() {
         content.removeAll()
         contentTitles.removeAll()
-        
         contentTitles = try! fileManager.contentsOfDirectory(at: documentDirectoryURL,
             includingPropertiesForKeys: nil).map {$0.lastPathComponent}
+        sort(sorted: UserDefaults.standard.bool(forKey: "alphabetSort"))
         contentTitles.forEach { contentPath in
             if let image = UIImage(contentsOfFile: documentDirectoryURL.appendingPathComponent(contentPath).path) {
                 content.append(image)
@@ -46,11 +46,17 @@ class FileManagerService {
         }
     }
     
+    func sort(sorted: Bool) {
+        if sorted {
+            contentTitles.sort { $0 < $1 }
+        } else {
+            contentTitles.sort { $0 > $1 }
+        }
+    }
+    
     /// Use shared property instead
     private init() {
         documentDirectoryURL = try! fileManager.url(for: .documentDirectory, in: [.userDomainMask], appropriateFor: nil, create: false)
-        contentTitles = try! fileManager.contentsOfDirectory(at: documentDirectoryURL,
-            includingPropertiesForKeys: nil).map {$0.lastPathComponent}
         updateContent()
     }
 }

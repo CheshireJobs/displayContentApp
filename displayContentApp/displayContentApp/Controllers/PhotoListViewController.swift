@@ -1,7 +1,6 @@
 import UIKit
 
 class PhotoListViewController: UIViewController, UINavigationControllerDelegate {
-    
     private let photoListView = PhotoListView()
     private var imagePickerController = UIImagePickerController()
     private var fileManager = FileManagerService.shared
@@ -31,23 +30,27 @@ class PhotoListViewController: UIViewController, UINavigationControllerDelegate 
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        fileManager.sort(sorted: UserDefaults.standard.bool(forKey: "alphabetSort"))
+        photoListView.reloadData()
     }
 }
 
 extension PhotoListViewController: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fileManager.content.count
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: PhotoTableViewCell.self), for: indexPath) as! PhotoTableViewCell
         cell.photoImageView.image = fileManager.content[indexPath.row]
+        cell.photoNameLabel.text = fileManager.contentTitles[indexPath.row]
         return cell
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
+    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             fileManager.removeFromDocumets(index: indexPath.row)
@@ -57,7 +60,6 @@ extension PhotoListViewController: UITableViewDataSource {
 }
 
 extension PhotoListViewController: UIImagePickerControllerDelegate {
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.originalImage] as? UIImage else { return }
         guard let infoPath = info[.imageURL] as? URL else { return }

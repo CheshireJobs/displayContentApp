@@ -8,10 +8,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let photoListViewController = PhotoListViewController()
-        let navigationViewController = UINavigationController(rootViewController: photoListViewController)
-        window?.rootViewController = navigationViewController
-        window?.makeKeyAndVisible()
+        
+        if UserDefaults.standard.object(forKey: "password") == nil {
+            UserDefaults.standard.set(false, forKey: "password")
+        }
+        
+        if UserDefaults.standard.object(forKey: "alphabetSort") == nil {
+            UserDefaults.standard.set(true, forKey: "alphabetSort")
+        }
+        
+        let applicationCoordinator = ApplicationCoordinator(window: window!)
+        applicationCoordinator.start()
         
         return true
     }
